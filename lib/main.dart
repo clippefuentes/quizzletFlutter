@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizzler/question.dart';
 
 void main() => runApp(Quizzler());
 
@@ -25,19 +26,36 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
+  List scoreKeeper = [];
+  List<Question> questions = [
+    Question(q: 'You can lead a cow down stairs but not up stairs.', a: false),
+    Question(q: 'Approximately one quarter of human bones are in the feet.', a: true),
+    Question(q: 'A slug\'s blood is green.', a: true),
+  ];
+
+  int currentQuestionId = 0;
+
+  void answerQuestion({bool answer}) {
+    bool currentAnswer = questions[currentQuestionId].questionAnswer;
+    if (currentAnswer == answer) {
+
+    } else {
+      
+    }
+
+    setState(() {
+      currentQuestionId++;
+    });
+  }
+
+  Widget questionWidget() {
+    return Expanded(
           flex: 5,
           child: Padding(
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where the question text will go.',
+                questions[currentQuestionId].questionText,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -46,13 +64,20 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ),
           ),
-        ),
-        Expanded(
+        );
+  }
+
+  Widget trueButtonWidget() {
+    return Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
-            child: FlatButton(
-              textColor: Colors.white,
-              color: Colors.green,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                // textColor: Colors.white,
+                // color: Colors.green,
+              ),
               child: Text(
                 'True',
                 style: TextStyle(
@@ -62,15 +87,21 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked true.
+                answerQuestion();
               },
             ),
           ),
-        ),
-        Expanded(
+        );
+  }
+
+  Widget falseButtonWidget() {
+    return Expanded(
           child: Padding(
             padding: EdgeInsets.all(15.0),
-            child: FlatButton(
-              color: Colors.red,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
               child: Text(
                 'False',
                 style: TextStyle(
@@ -80,11 +111,27 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked false.
+                answerQuestion();
               },
             ),
           ),
-        ),
-        //TODO: Add a Row here as your score keeper
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        questionWidget(),
+        trueButtonWidget(),
+        falseButtonWidget(),
+        Container(child: Row(
+          children: [
+             ...scoreKeeper.toList()
+          ]
+        ))
       ],
     );
   }
